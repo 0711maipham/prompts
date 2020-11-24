@@ -6,9 +6,18 @@
     "@testing-library/jest-dom": "^5.11.6",
     "@testing-library/react": "^11.1.2",
     "@testing-library/user-event": "^12.2.2",
+    "boostrap": "^2.0.0",
+    "bootstrap": "^4.5.3",
+    "firebase": "^8.0.2",
     "react": "^17.0.1",
+    "react-bootstrap": "^1.4.0",
+    "react-dnd": "^7.6.2",
+    "react-dnd-html5-backend": "^7.6.2",
     "react-dom": "^17.0.1",
+    "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.0",
+    "react-tag-input": "^6.4.3",
+    "react-toggle": "^4.1.1",
     "web-vitals": "^0.2.4"
   },
   "scripts": {
