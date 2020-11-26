@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 import { Card, Button, Alert } from 'react-bootstrap'
 import { Link, useHistory } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
@@ -8,7 +8,21 @@ import firebase from 'firebase/app'
 export default function Dashboard(props) {
     const { currentUser, logout } = useAuth();
     const [error, setError] = useState("");
+    const [decks, setDecks] = useState([]);
     const history = useHistory();
+
+    useEffect(() => {
+        //console.log("use effect in dashboard called")
+        const unsubscribe = firebase.firestore().collection('deck').where("createdBy", "==", currentUser.uid).onSnapshot(serverUpdate => {
+            const decks = serverUpdate.docs.map(_doc => {
+              const data = _doc.data();
+              data['id'] = _doc.id;
+              return data;
+            })
+            setDecks(decks)
+          });
+          return unsubscribe
+        }, [])
 
     async function handleLogout() {
         setError("")
@@ -31,23 +45,19 @@ export default function Dashboard(props) {
             name: name,
             createdBy: currentUser.uid,
             openEdit: false,
+            private: false,
             dateCreated: firebase.firestore.FieldValue.serverTimestamp(),
             dateEdited: firebase.firestore.FieldValue.serverTimestamp()
         });
 
-        firebase.firestore().collection('deck').onSnapshot(serverUpdate => {
-            const decks = serverUpdate.docs.map(_doc => {
-              const data = _doc.data();
-              data['id'] = _doc.id;
-              return data;
-            })
-            console.log(decks);
-        //const currentDeck = decks.filter(deck => deck.id == newFromDb.id);
-        });
-
-        // history.push({
-        //     pathname: '/deck/'+deck.id,
-        //     state: { deck: deck }
+        // firebase.firestore().collection('deck').onSnapshot(serverUpdate => {
+        //     const decks = serverUpdate.docs.map(_doc => {
+        //       const data = _doc.data();
+        //       data['id'] = _doc.id;
+        //       return data;
+        //     })
+        //     console.log(decks);
+        // //const currentDeck = decks.filter(deck => deck.id == newFromDb.id);
         // });
 
         history.push(`/deck/${newFromDb.id}`)
@@ -65,6 +75,7 @@ export default function Dashboard(props) {
         </Card> */}
             <AddDeck
                 newDeck={newDeck}
+                decks={decks}
             />
 
             <div className="w-100 text-center mt-2">

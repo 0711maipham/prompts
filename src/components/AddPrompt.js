@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react"
+import React, { useRef, useState, useEffect } from "react"
 import { Form, Button, Card, Alert } from "react-bootstrap"
 import { useAuth } from "../contexts/AuthContext"
 import { Link } from "react-router-dom"
@@ -11,33 +11,41 @@ export default function AddPrompt(props) {
     const [error, setError] = useState("")
     const [message, setMessage] = useState("")
     const [loading, setLoading] = useState(false)
-    const [suggestions, setSuggestions] = useState(false)
-    const { addPrompt, allTags, formatTags } = props
+    const [tags, setTags] = useState([])
+    const [uid, setUid] = useState("")
+    const { addPrompt, allTags, deck, formatTags } = props
 
-    const convertedTags = allTags.map((tag) => ({
-        id: tag,
-        text: tag,
-    }))
+    useEffect(() => {
+        console.log("use effect in add prompt called");
+        if (currentUser == null) {
+            setUid("anon")
+        }
+        else {
+            setUid(currentUser.uid)
+        }
+    }, [])
 
     async function handleSubmit(e) {
         e.preventDefault()
 
         let uniqTags = [];
-        if (tagsRef.current.value) {
-            console.log(tagsRef.current.value)
-            uniqTags = formatTags(tagsRef.current.value)
-        }
+        // if (tagsRef.current.value) {
+        //     console.log(tagsRef.current.value)
+        //     uniqTags = formatTags(tagsRef.current.value)
+        // }
 
         try {
             setMessage("")
             setError("")
             setLoading(true)
-            await addPrompt(bodyRef.current.value, uniqTags)
+            await addPrompt(bodyRef.current.value, tags)
             setMessage("Added successfully.")
         } catch {
             setError("Failed to add prompt.")
         }
         e.target.reset();
+        //resetting the Tags doesnt update the Tags state of the Tags component for some reason... :(
+        //setTags([]);
         setLoading(false)
     }
 
@@ -50,9 +58,15 @@ export default function AddPrompt(props) {
         }
     }
 
+    async function handleTags(tags) {
+        await setTags(tags);
+        console.log(tags);
+    }
+
     return (
         <>
-            <Card>
+            { (uid == deck.createdBy) || (deck.openEdit) ?
+                <Card>
                 <Card.Body>
                     <h2 className="text-center mb-4">Add Prompt</h2>
                     {error && <Alert variant="danger">{error}</Alert>}
@@ -64,7 +78,7 @@ export default function AddPrompt(props) {
                         </Form.Group>
                         <Form.Group id="tags">
                             <Form.Label>Tags</Form.Label>
-                            <Form.Control as="select" onChange={handleDropdown}>
+                            {/* <Form.Control as="select" onChange={handleDropdown}>
                                 <option value="" disabled selected>Select existing tag</option>
                                 {
                                     allTags.map((tag, index) => {
@@ -76,9 +90,11 @@ export default function AddPrompt(props) {
                                     })
                                 }
                             </Form.Control>
-                            <Form.Control type="text" ref={tagsRef} />
+                            <Form.Control type="text" ref={tagsRef} /> */}
                             <Tags 
-                                allTags={convertedTags}
+                                allTags={allTags}
+                                changeHandler={handleTags}
+                                promptTags={tags}
                             />
                         </Form.Group>
                         <Button disabled={loading} className="w-100" type="submit">
@@ -87,6 +103,11 @@ export default function AddPrompt(props) {
                     </Form>
                 </Card.Body>
             </Card>
+            :
+            <Card>
+
+            </Card>
+            }
         </>
     )
 }

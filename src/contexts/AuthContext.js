@@ -1,5 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react'
 import { auth } from '../firebase'
+import firebase from 'firebase/app'
 
 const AuthContext = React.createContext();
 
@@ -12,7 +13,13 @@ export function AuthProvider({ children }) {
     const [loading, setLoading] = useState(true);
 
     function signup(email, password) {
-        return auth.createUserWithEmailAndPassword(email, password)
+        return auth.createUserWithEmailAndPassword(email, password).then((user) => {
+            firebase.firestore().collection('users').add({
+                uid: auth.currentUser.uid,
+                savedDecks: [],
+                dateCreated: firebase.firestore.FieldValue.serverTimestamp()
+            });
+        })
     }
 
     function login(email, password) {
