@@ -1,5 +1,11 @@
 body {
     font-family: 'Quicksand', sans-serif;
+    background-color: #232323;
+    color: #C3C3C3;
+}
+
+h2, h3, h4, label {
+    color: #fff;
 }
 
 h2 {
@@ -16,15 +22,90 @@ h4 {
     font-size: 1.2em;
 }
 
+hr {
+    border-top: 1px solid rgba(255, 255, 255, 0.1)
+}
+
 label {
     font-weight: 500;
 }
 
-.Nav__container {
-    width: 100%;
-    background-color: #000;
+.form-control, .form-control:focus, .form-control:read-only {
+    background-color: #232323;
+    border-color: #3C3C3C;
+    color: #C3C3C3;
+}
+
+a {
+    color: #70B0B4;
+}
+
+.btn, .btn:hover {
     color: #fff;
-    margin-bottom: 50px;
+}
+
+.btn-primary, .btn-primary:disabled, .btn-outline-secondary, .btn-outline-secondary:hover {
+    color: #fff;
+    background-color:#70B0B4;
+    border-color: #70B0B4;
+}
+
+.btn-primary:hover {
+    background-color:#66989F;
+    border-color: #66989F;
+}
+
+.btn-secondary {
+    color: #fff;
+    background-color:#6A6A6A;
+    border-color: #6A6A6A;
+}
+
+.btn-secondary:hover {
+    background-color:#5C5C5C;
+    border-color: #5C5C5C;
+}
+
+.btn-primary:disabled, .btn-secondary:disabled {
+    opacity: .5;
+}
+
+.card, .modal-content, .modal-header, .modal-footer {
+    background-color: #2D2D2D;
+    border-color: #3C3C3C;
+}
+
+.card-header {
+    background-color: rgba(0, 0, 0, 0.1)
+}
+
+.Nav__item-wrapper {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #2D2D2D;
+}
+  
+.Nav__item {
+    float: left;
+}
+  
+.Nav__link {
+    display: block;
+    color: #70B0B4;
+    text-align: center;
+    padding: 10px 0 10px 25px;
+    text-decoration: none;
+}
+
+.Nav__link:hover {
+    color: #C3C3C3;
+}
+
+.bottom-divider {
+    border-bottom: 1px solid #3C3C3C;
+    margin-bottom: 20px;
 }
 
 .col-padding {
@@ -33,27 +114,47 @@ label {
 
 .placeholder-box {
     margin: auto;
-    border: 2px dashed #ccc;
+    border: 2px dashed #fff;
+    color: #fff;
+    opacity: .2;
     text-align: center;
     padding: 30px;
     border-radius: 6px;
 }
 
+.prompts-list {
+    max-height: 650px;
+    overflow-y: scroll;
+}
+
 @media only screen and (min-width: 576px) {
     .right-divider {
-        border-right: 1px solid #ccc;
+        border-right: 1px solid #3C3C3C;
     }
 }
 
 .subline {
     font-style: italic;
     font-size: .8em;
+    opacity: .7;
 }
 
 .tag {
     font-size: .8em;
     padding: 4px 7px;
-    border: 1px solid #CCC;
+    border: 1px solid #70B0B4;
+    background-color: #70B0B4;
+    color: #232323;
+    opacity: .9;
     border-radius: 3px;
     margin-right: 5px;
+}
+
+.icon-button{
+    width: 100%;
+    height: 20px;
+    padding: 0px;
+    font-size: .7em;
+    border-radius: 12px;
+    color: #fff;
 }

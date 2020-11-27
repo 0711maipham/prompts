@@ -43,7 +43,7 @@ export default function AddDeck(props) {
             <Card>
                 <Card.Body>
                     <Row>
-                        <Col sm="6" className="mb-3">
+                        <Col sm="6" className="right-divider col-padding mb-3">
                     <h2 className="text-center mb-4">Create a New Deck</h2>
                     {error && <Alert variant="danger">{error}</Alert>}
                     <Form onSubmit={handleSubmit}>
@@ -56,7 +56,7 @@ export default function AddDeck(props) {
                         </Button>
                     </Form>
                     </Col>
-                    <Col sm="6" className="mb-3">
+                    <Col sm="6" className="col-padding mb-3">
                     <h2 className="text-center mb-4">Load Existing Deck</h2>
                     {error && <Alert variant="danger">{error}</Alert>}
                     <Form onSubmit={handleLoadDeckSubmit}>

@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect } from "react"
 import { Form, Button, Card, Alert, Modal } from "react-bootstrap"
 import Tags from "./Tags"
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 export default function EditPrompt(props) {
     const { promptId, body, promptTags, editPrompt, allTags, comment, title, disabled } = props;
@@ -52,8 +53,8 @@ export default function EditPrompt(props) {
 
     return (
         <>
-            <Button variant="primary" disabled={disabled} onClick={handleShow}>
-                E
+            <Button variant="text" className="btn-primary icon-button" disabled={disabled} onClick={handleShow}>
+            Edit
             </Button>
 
             <Modal show={show} onHide={handleClose}>
