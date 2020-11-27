@@ -24,8 +24,11 @@ export default function Tags(props) {
     }
 
     async function handleAddition(t) {
-        console.log(t)
-        if (!preventAdd) {
+        //console.log(t)
+        //Check if the t matches any of the tags in suggestions
+        const match = allTags.find(x => x.id === t.id);
+        //console.log("Is Unique", match)
+        if (!preventAdd || match) {
             t.id = t.id.toLowerCase();
             t.text = t.text.toLowerCase();
             let newTags = [...tags, t];
@@ -60,7 +63,8 @@ export default function Tags(props) {
             handleTagClick={handleTagClick}
             maxLength={20}
             minQueryLength={1}
-            autofocus={false}
+            autofocus={true}
+            autocomplete={preventAdd}
         />
         </Form.Group>
     )

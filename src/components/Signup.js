@@ -44,7 +44,7 @@ export default function Signup() {
                         </Form.Group>
                         <Form.Group id="password">
                             <Form.Label>Password</Form.Label>
-                            <Form.Control type="password" ref={passwordRef} required></Form.Control>
+                            <Form.Control type="password" ref={passwordRef} minLength={6} required></Form.Control>
                         </Form.Group>
                         <Form.Group id="confirm-password">
                             <Form.Label>Confirm Password</Form.Label>

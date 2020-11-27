@@ -1,7 +1,6 @@
 import React, { useRef, useState, useEffect } from "react"
-import { Button, Card, Alert, Row, Col } from "react-bootstrap"
+import { Card, Row, Col, Accordion } from "react-bootstrap"
 import { useAuth } from "../contexts/AuthContext"
-import { Link } from "react-router-dom"
 import EditPrompt from "./EditPrompt"
 import ConfirmDelete from "./ConfirmDelete"
 
@@ -50,42 +49,49 @@ export default function PromptList(props) {
     return (
         <>
             {(uid == deck.createdBy) || (!deck.private) ?
-                <Card>
-                    <Card.Body>
-                        {
-                            prompts.map((prompt) => {
-                                return (
-                                    <Row key={prompt.id}>
-                                        <Col xs="9">
-                                            <h4>{prompt.title}</h4>
-                                            <p>{prompt.body.substring(0, 85) + "..."}</p>
-                                        </Col>
-                                        <Col xs="3">
-                                            <ConfirmDelete
-                                                handleDelete={() => handleDelete(prompt.id)}
-                                                title={"Delete prompt?"}
-                                                body={"This can't be undone"}
-                                                disabled={disabled}
-                                            />
-                                            <EditPrompt
-                                                promptId={prompt.id}
-                                                body={prompt.body}
-                                                promptTags={prompt.tags}
-                                                title={prompt.title}
-                                                comment={prompt.comment}
-                                                editPrompt={handleEdit}
-                                                allTags={allTags}
-                                                formatTags={formatTags}
-                                                disabled={disabled}
-                                            />
-                                        </Col>
-                                        <hr />
-                                    </Row>
-                                )
-                            })
-                        }
-                    </Card.Body>
-                </Card>
+                <Accordion >
+                    <Card>
+                        <Accordion.Toggle as={Card.Header} eventKey="0">
+                            <h2>Contents</h2>
+                        </Accordion.Toggle>
+                        <Accordion.Collapse eventKey="0">
+                            <Card.Body className="prompts-list">
+                                {
+                                    prompts.map((prompt) => {
+                                        return (
+                                            <Row key={prompt.id} className="bottom-divider">
+                                                <Col xs="9">
+                                                    <h4>{prompt.title}</h4>
+                                                    <p>{prompt.body.substring(0, 85) + "..."}</p>
+                                                </Col>
+                                                <Col xs="3">
+                                                    <EditPrompt
+                                                        promptId={prompt.id}
+                                                        body={prompt.body}
+                                                        promptTags={prompt.tags}
+                                                        title={prompt.title}
+                                                        comment={prompt.comment}
+                                                        editPrompt={handleEdit}
+                                                        allTags={allTags}
+                                                        formatTags={formatTags}
+                                                        disabled={disabled}
+                                                    />
+                                                    <ConfirmDelete
+                                                        handleDelete={() => handleDelete(prompt.id)}
+                                                        title={"Delete prompt?"}
+                                                        body={"This can't be undone"}
+                                                        disabled={disabled}
+                                                    />
+                                                </Col>
+                                                <hr />
+                                            </Row>
+                                        )
+                                    })
+                                }
+                            </Card.Body>
+                        </Accordion.Collapse>
+                    </Card>
+                </Accordion>
                 :
                 <>
                 </>

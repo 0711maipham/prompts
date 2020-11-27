@@ -12,6 +12,12 @@ import ForgotPassword from './ForgotPassword'
 import UpdateProfile from "./UpdateProfile"
 import EditDeck from "./EditDeck"
 import Nav from './Nav';
+import ReactDOM from 'react-dom'
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { fab } from '@fortawesome/free-brands-svg-icons'
+import { faCheckSquare, faCoffee, faHome, faCog, faSignInAlt, faMinusSquare, faEdit } from '@fortawesome/free-solid-svg-icons'
+
+library.add(fab, faCheckSquare, faCoffee, faHome, faCog, faSignInAlt, faMinusSquare, faEdit)
 
 function App() {
   return (

@@ -14,14 +14,17 @@
       margin: 0;
       font-size: 12px;
       width: 100%;
-      border: 1px solid #eee;
+      background-color: #232323;
+      border: 1px solid #3C3C3C;
+      color: #fff;
       padding: 0 4px;
   }
   
   /* Styles for selected tags */
   div.ReactTags__selected span.ReactTags__tag {
-      border: 1px solid #ddd;
-      background: #eee;
+    background-color:#70B0B4;
+    border: 1px solid #70B0B4;
+    color: #232323;
       font-size: 12px;
       display: inline-block;
       padding: 5px;
@@ -30,7 +33,7 @@
       border-radius: 2px;
   }
   div.ReactTags__selected a.ReactTags__remove {
-      color: #aaa;
+      color: #232323;
       margin-left: 5px;
       cursor: pointer;
   }
@@ -43,20 +46,22 @@
   div.ReactTags__suggestions ul {
       list-style-type: none;
       box-shadow: .05em .01em .5em rgba(0,0,0,.2);
-      background: white;
+      background: #232323;
+      color: #fff;
       width: 200px;
   }
   div.ReactTags__suggestions li {
-      border-bottom: 1px solid #ddd;
+      border-bottom: 1px solid #3C3C3C;
       padding: 5px 10px;
       margin: 0;
   }
   div.ReactTags__suggestions li mark {
       text-decoration: underline;
+      color: #70B0B4;
       background: none;
       font-weight: 600;
   }
   div.ReactTags__suggestions ul li.ReactTags__activeSuggestion {
-      background: #b7cfe0;
+      background: #6A6A6A;
       cursor: pointer;
   }

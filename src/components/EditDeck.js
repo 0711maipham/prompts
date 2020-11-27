@@ -25,8 +25,7 @@ class EditDeck extends React.Component {
             <Container>
                 {this.state.deck !== undefined ?
                     <>
-                        <div>{this.state.deck.name}</div>
-                        <Row className="mb-2">
+                        <Row className="mb-4">
                             <Col md="12">
                                 <FilterPrompts
                                     allTags={this.state.allTags}
@@ -34,6 +33,7 @@ class EditDeck extends React.Component {
                                     andOr={this.setAndOr}
                                     filterPrompts={this.filterPrompts}
                                     deck={this.state.deck}
+                                    promptCount={this.state.prompts.length}
                                 ></FilterPrompts>
                             </Col>
                         </Row>
