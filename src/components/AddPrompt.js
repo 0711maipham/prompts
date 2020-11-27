@@ -1,19 +1,19 @@
 import React, { useRef, useState, useEffect } from "react"
-import { Form, Button, Card, Alert } from "react-bootstrap"
+import { Form, Button, Card, Alert, Accordion } from "react-bootstrap"
 import { useAuth } from "../contexts/AuthContext"
-import { Link } from "react-router-dom"
 import Tags from "./Tags"
 
 export default function AddPrompt(props) {
     const { currentUser } = useAuth();
     const bodyRef = useRef()
-    const tagsRef = useRef()
+    const commentRef = useRef()
+    const titleRef = useRef()
     const [error, setError] = useState("")
     const [message, setMessage] = useState("")
     const [loading, setLoading] = useState(false)
     const [tags, setTags] = useState([])
     const [uid, setUid] = useState("")
-    const { addPrompt, allTags, deck, formatTags } = props
+    const { addPrompt, allTags, deck } = props
 
     useEffect(() => {
         console.log("use effect in add prompt called");
@@ -38,7 +38,7 @@ export default function AddPrompt(props) {
             setMessage("")
             setError("")
             setLoading(true)
-            await addPrompt(bodyRef.current.value, tags)
+            await addPrompt(bodyRef.current.value, tags, commentRef.current.value, titleRef.current.value)
             setMessage("Added successfully.")
         } catch {
             setError("Failed to add prompt.")
@@ -49,15 +49,6 @@ export default function AddPrompt(props) {
         setLoading(false)
     }
 
-    function handleDropdown(e) {
-        if (e.target.value !== "") {
-            tagsRef.current.value = tagsRef.current.value + ", " + e.target.value;
-        }
-        if (tagsRef.current.value[0] == ',') {
-            tagsRef.current.value = tagsRef.current.value.substring(1);
-        }
-    }
-
     async function handleTags(tags) {
         await setTags(tags);
         console.log(tags);
@@ -65,48 +56,49 @@ export default function AddPrompt(props) {
 
     return (
         <>
-            { (uid == deck.createdBy) || (deck.openEdit) ?
-                <Card>
-                <Card.Body>
-                    <h2 className="text-center mb-4">Add Prompt</h2>
-                    {error && <Alert variant="danger">{error}</Alert>}
-                    {message && <Alert variant="success">{message}</Alert>}
-                    <Form onSubmit={handleSubmit}>
-                        <Form.Group id="body">
-                            <Form.Label>Prompt</Form.Label>
-                            <Form.Control as="textarea" ref={bodyRef} required />
-                        </Form.Group>
-                        <Form.Group id="tags">
-                            <Form.Label>Tags</Form.Label>
-                            {/* <Form.Control as="select" onChange={handleDropdown}>
-                                <option value="" disabled selected>Select existing tag</option>
-                                {
-                                    allTags.map((tag, index) => {
-                                        return (
-                                            <option key={index}>
-                                                {tag}
-                                            </option>
-                                        )
-                                    })
-                                }
-                            </Form.Control>
-                            <Form.Control type="text" ref={tagsRef} /> */}
-                            <Tags 
-                                allTags={allTags}
-                                changeHandler={handleTags}
-                                promptTags={tags}
-                            />
-                        </Form.Group>
-                        <Button disabled={loading} className="w-100" type="submit">
-                            Add
-                        </Button>
-                    </Form>
-                </Card.Body>
-            </Card>
-            :
-            <Card>
-
-            </Card>
+            {(uid == deck.createdBy) || (deck.openEdit) ?
+                <Accordion className="mb-2">
+                    <Card>
+                        <Accordion.Toggle as={Card.Header} eventKey="0">
+                            <h2>Add a Prompt</h2>
+                        </Accordion.Toggle>
+                        <Accordion.Collapse eventKey="0">
+                            <Card.Body>
+                                {error && <Alert variant="danger">{error}</Alert>}
+                                {message && <Alert variant="success">{message}</Alert>}
+                                <Form onSubmit={handleSubmit}>
+                                    <Form.Group id="title">
+                                        <Form.Label>Title</Form.Label>
+                                        <Form.Control type="text" ref={titleRef} maxLength={50} />
+                                    </Form.Group>
+                                    <Form.Group id="body">
+                                        <Form.Label className="mr-2">Prompt</Form.Label><span className="subline">Required.</span>
+                                        <Form.Control as="textarea" ref={bodyRef} maxLength={550} required />
+                                    </Form.Group>
+                                    <Form.Group id="comment">
+                                        <Form.Label>Comment</Form.Label>
+                                        <Form.Control type="text" ref={commentRef} maxLength={200} />
+                                    </Form.Group>
+                                    <Tags
+                                        allTags={allTags}
+                                        changeHandler={handleTags}
+                                        promptTags={tags}
+                                        preventAdd={false}
+                                    />
+                                    <Button disabled={loading} className="w-100" type="submit">
+                                        Add
+                                    </Button>
+                                </Form>
+                            </Card.Body>
+                        </Accordion.Collapse>
+                    </Card>
+                </Accordion>
+                :
+                <div className="placeholder-box">
+                    <p>
+                        Editing disabled for this deck.
+                    </p>
+                </div>
             }
         </>
     )

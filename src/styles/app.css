@@ -1,0 +1,59 @@
+body {
+    font-family: 'Quicksand', sans-serif;
+}
+
+h2 {
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 500;
+    font-size: 1.8em;
+}
+
+h3 {
+    font-size: 1.5em;
+}
+
+h4 {
+    font-size: 1.2em;
+}
+
+label {
+    font-weight: 500;
+}
+
+.Nav__container {
+    width: 100%;
+    background-color: #000;
+    color: #fff;
+    margin-bottom: 50px;
+}
+
+.col-padding {
+    padding: 0 5%;
+}
+
+.placeholder-box {
+    margin: auto;
+    border: 2px dashed #ccc;
+    text-align: center;
+    padding: 30px;
+    border-radius: 6px;
+}
+
+@media only screen and (min-width: 576px) {
+    .right-divider {
+        border-right: 1px solid #ccc;
+    }
+}
+
+.subline {
+    font-style: italic;
+    font-size: .8em;
+}
+
+.tag {
+    font-size: .8em;
+    padding: 4px 7px;
+    border: 1px solid #CCC;
+    border-radius: 3px;
+    margin-right: 5px;
+}

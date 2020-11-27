@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from "react"
-import { Form, Button, Card, Alert } from "react-bootstrap"
+import { Form, Button, Card, Row, Col, OverlayTrigger, Tooltip} from "react-bootstrap"
 import { useAuth } from "../contexts/AuthContext"
 import { Link } from "react-router-dom"
 import Toggle from 'react-toggle'
@@ -56,18 +56,22 @@ export default function FilterPrompts(props) {
         console.log(tags);
     }
 
+    const renderPrivacyTooltip = (props) => (
+        <Tooltip id="button-tooltip">
+            {props}
+        </Tooltip>
+    );
+
     return (
         <>
-            { (uid == deck.createdBy) || (!deck.private) ?
+            {(uid == deck.createdBy) || (!deck.private) ?
                 <Card>
                     <Card.Body>
-                        <h2 className="text-center mb-4">Draw Prompt</h2>
-                        {error && <Alert variant="danger">{error}</Alert>}
-                        {message && <Alert variant="success">{message}</Alert>}
-                        <Form onSubmit={handleSubmit}>
-                            <Form.Group id="tags">
-                                <Form.Label>Tags</Form.Label>
-                                {/* <Form.Control as="select" onChange={handleDropdown}>
+                        <Row>
+                            <Col md="5" className="mb-3">
+                                <h2 className="text-center mb-4">Draw Prompt</h2>
+                                <Form onSubmit={handleSubmit}>
+                                    {/* <Form.Control as="select" onChange={handleDropdown}>
                             <option value="" selected>Select existing tag</option>
                                 {
                                     allTags.map((tag, index) => {
@@ -80,42 +84,65 @@ export default function FilterPrompts(props) {
                                 }
                             </Form.Control>
                             <Form.Control type="text" ref={tagsRef} /> */}
-                                <Tags
-                                    allTags={allTags}
-                                    changeHandler={handleTags}
-                                    promptTags={tags}
-                                />
-                            </Form.Group>
-                            <label>
-                                <span>"Or"</span>
-                                <Toggle
-                                    icons={false}
-                                    onChange={handleToggle}
-                                />
-                                <span>"And"</span>
-                            </label>
-                            <Button disabled={loading} className="w-100" type="submit">
-                                Draw
-                        </Button>
-                        </Form>
+                                    <Tags
+                                        allTags={allTags}
+                                        changeHandler={handleTags}
+                                        promptTags={tags}
+                                        preventAdd={true}
+                                    />
+                                    <label>
+                                        <OverlayTrigger
+                                            placement="right"
+                                            delay={{ show: 250, hide: 400 }}
+                                            overlay={renderPrivacyTooltip("Include prompts that have at least one of the specified tags.")}
+                                        >
+                                            <Button variant="text" size="sm" className="mb-3">Or</Button>
+                                        </OverlayTrigger>
+                                        <Toggle
+                                            icons={false}
+                                            onChange={handleToggle}
+                                        />
+                                        <OverlayTrigger
+                                            placement="right"
+                                            delay={{ show: 250, hide: 400 }}
+                                            overlay={renderPrivacyTooltip("Include prompts that have all of the specified tags.")}
+                                        >
+                                            <Button variant="text" size="sm" className="mb-3">And</Button>
+                                        </OverlayTrigger>
+                                    </label>
+                                    <Button disabled={loading} className="w-100" type="submit">
+                                        Draw
+                                    </Button>
+                                    <hr />
+                                </Form>
+                            </Col>
+                            <Col md="7">
+                                {
+                                    prompt !== null ?
+
+                                        <div className="">
+                                            <h3>{prompt.title}</h3>
+                                            <p>{prompt.body}</p>
+                                            <p className="subline">{prompt.comment}</p>
+                                            <hr />
+                                            {prompt.tags.map((tag) => {
+                                                return (
+                                                    <span key={tag.id} className="tag">{tag.text}</span>
+                                                )
+                                            })}
+                                        </div>
+
+                                        :
+
+                                        <div className="placeholder-box mt-5">
+                                            <p>
+                                                Click "Draw" to get started.
+                                            </p>
+                                        </div>
+                                }
+                            </Col>
+                        </Row>
                     </Card.Body>
-                    <Card.Footer>
-                        {
-                            prompt !== null ? 
-                            
-                            <div>
-                                {prompt.body}
-                                <hr/>
-                                {prompt.tags.map((tag) => {
-                                    return (
-                                        <span id={tag.id}>{tag.text}</span>
-                                    )
-                                })}
-                            </div>
-                            
-                            : ""
-                        }
-                    </Card.Footer>
                 </Card>
                 :
                 <Card>

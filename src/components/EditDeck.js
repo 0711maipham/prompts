@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react"
-import { Form, Button, Card, Alert, Container } from "react-bootstrap"
+import { Form, Button, Card, Alert, Container, Row, Col } from "react-bootstrap"
 import { Link } from "react-router-dom"
 import firebase from 'firebase/app'
 import AddPrompt from './AddPrompt'
@@ -23,33 +23,57 @@ class EditDeck extends React.Component {
     render() {
         return (
             <Container>
-                <div>{this.state.deck.name}</div>
-                <DeckSettings
-                    deck={this.state.deck}
-                    onChange={this.updateSettings}
-                    download={this.download}
-                ></DeckSettings>
-                <AddPrompt
-                    addPrompt={this.addPrompt}
-                    allTags={this.state.allTags}
-                    formatTags={this.formatTags}
-                    deck={this.state.deck}
-                ></AddPrompt>
-                <FilterPrompts
-                    allTags={this.state.allTags}
-                    formatTags={this.formatTags}
-                    andOr={this.setAndOr}
-                    filterPrompts={this.filterPrompts}
-                    deck={this.state.deck}
-                ></FilterPrompts>
-                <PromptsList
-                    prompts={this.state.prompts}
-                    deletePrompt={this.deletePrompt}
-                    editPrompt={this.editPrompt}
-                    allTags={this.state.allTags}
-                    formatTags={this.formatTags}
-                    deck={this.state.deck}
-                ></PromptsList>
+                {this.state.deck !== undefined ?
+                    <>
+                        <div>{this.state.deck.name}</div>
+                        <Row className="mb-2">
+                            <Col md="12">
+                                <FilterPrompts
+                                    allTags={this.state.allTags}
+                                    formatTags={this.formatTags}
+                                    andOr={this.setAndOr}
+                                    filterPrompts={this.filterPrompts}
+                                    deck={this.state.deck}
+                                ></FilterPrompts>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col md="5">
+                                <AddPrompt
+                                    addPrompt={this.addPrompt}
+                                    allTags={this.state.allTags}
+                                    formatTags={this.formatTags}
+                                    deck={this.state.deck}
+                                ></AddPrompt>
+                                <DeckSettings
+                                    deck={this.state.deck}
+                                    onChange={this.updateSettings}
+                                    download={this.download}
+                                    deleteDeck={this.deleteDeck}
+                                ></DeckSettings>
+                            </Col>
+                            <Col md="7">
+                                <PromptsList
+                                    prompts={this.state.prompts}
+                                    deletePrompt={this.deletePrompt}
+                                    editPrompt={this.editPrompt}
+                                    allTags={this.state.allTags}
+                                    formatTags={this.formatTags}
+                                    deck={this.state.deck}
+                                ></PromptsList>
+                            </Col>
+                        </Row>
+                    </>
+                    :
+                    <Card>
+                        <Card.Body>
+                            This deck does not exist.
+                    </Card.Body>
+                        <Card.Footer>
+                            <Link to="/">Go Back</Link>
+                        </Card.Footer>
+                    </Card>
+                }
             </Container>
         )
     }
@@ -85,7 +109,7 @@ class EditDeck extends React.Component {
             }
             return false;
         }, Object.create(null));
-        console.log("serialized tags", uniqTags);
+        //console.log("serialized tags", uniqTags);
         this.setState({
             allTags: uniqTags
         })
@@ -104,7 +128,7 @@ class EditDeck extends React.Component {
     // }
 
     updateSettings = (setting, settingValue) => {
-        console.log("update settings called", setting, settingValue)
+        //console.log("update settings called", setting, settingValue)
         firebase.firestore().collection('deck').doc(this.state.deck.id).update(setting, settingValue);
 
     }
@@ -145,20 +169,27 @@ class EditDeck extends React.Component {
         });
     }
 
-    addPrompt = async (body, tags) => {
-        console.log("Added: " + body + " " + tags)
+    addPrompt = async (body, tags, comment, title) => {
+        //console.log("Added: " + body + " " + tags)
+        const promptTitle = title == null ? "Untitled" : title
         const newFromDb = await firebase.firestore().collection('prompts').add({
             deckId: this.state.deckId,
             body: body,
             tags: tags,
+            comment: comment,
+            title: promptTitle,
             dateUpdated: firebase.firestore.FieldValue.serverTimestamp()
         });
     }
 
-    editPrompt = (id, body, tags) => {
+    editPrompt = (id, body, tags, comment, title) => {
+        //console.log(title, body, comment)
+        const promptTitle = title == "" ? "Untitled" : title
         firebase.firestore().collection('prompts').doc(id).update({
             body: body,
             tags: tags,
+            comment: comment,
+            title: promptTitle,
             dateUpdated: firebase.firestore.FieldValue.serverTimestamp()
         });
     }
@@ -166,6 +197,26 @@ class EditDeck extends React.Component {
     deletePrompt = (id) => {
         console.log("Deleted Prompt")
         firebase.firestore().collection('prompts').doc(id).delete();
+    }
+
+    deleteDeck = async (id) => {
+        console.log("Deleted Deck")
+        await firebase.firestore().collection('prompts').where("deckId", "==", id).get().then(function (querySnapshot) {
+            // Once we get the results, begin a batch
+            var batch = firebase.firestore().batch();
+
+            querySnapshot.forEach(function (doc) {
+                // For each doc, add a delete operation to the batch
+                batch.delete(doc.ref);
+            });
+
+            // Commit the batch
+            batch.commit();
+        }).then(function () {
+            // Delete completed!
+            // ...
+            firebase.firestore().collection('deck').doc(id).delete();
+        });
     }
 
     setAndOr = async () => {
@@ -179,7 +230,7 @@ class EditDeck extends React.Component {
     }
 
     filterPrompts = async (tags) => {
-        console.log(tags, this.state.prompts.length, this.state.andOr);
+        //console.log(tags, this.state.prompts.length, this.state.andOr);
         let andOr = this.state.andOr; //FALSE= OR; TRUE= AND
         let filteredPrompts = [];
         //let and = (arr, target) => target.every(v => arr.includes(v));
@@ -220,9 +271,8 @@ class EditDeck extends React.Component {
                 }
             }
         }
-        console.log(filteredPrompts);
+        //console.log(filteredPrompts);
         const random = Math.floor(Math.random() * Math.floor(filteredPrompts.length));
-        console.log("random", filteredPrompts[random])
         return filteredPrompts[random];
     }
 

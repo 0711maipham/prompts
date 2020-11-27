@@ -1,8 +1,9 @@
 import React, { useRef, useState, useEffect } from "react"
-import { Button, Card, Alert } from "react-bootstrap"
+import { Button, Card, Alert, Row, Col } from "react-bootstrap"
 import { useAuth } from "../contexts/AuthContext"
 import { Link } from "react-router-dom"
 import EditPrompt from "./EditPrompt"
+import ConfirmDelete from "./ConfirmDelete"
 
 export default function PromptList(props) {
     const { currentUser } = useAuth();
@@ -19,67 +20,75 @@ export default function PromptList(props) {
         console.log("use effect in prompts list called");
         if (currentUser == null) {
             setUid("anon")
-            if(deck.openEdit) {
+            if (deck.openEdit) {
                 setDisabled(false)
             }
         }
         else {
             setUid(currentUser.uid)
-            if(currentUser.uid == deck.createdBy) {
+            if (currentUser.uid == deck.createdBy) {
                 setDisabled(false)
             }
-            else if(deck.openEdit) {
+            else if (deck.openEdit) {
                 setDisabled(false)
             }
         }
     })
 
-    console.log("disabled?", disabled)
+    //console.log("disabled?", disabled)
 
     function handleDelete(id) {
         deletePrompt(id)
     }
 
-    function handleEdit(id, body, tags) {
-        editPrompt(id, body, tags)
+    function handleEdit(id, body, tags, comment, title) {
+        editPrompt(id, body, tags, comment, title)
     }
 
     //console.log("prompts from prompt list", prompts)
 
     return (
         <>
-            { (uid == deck.createdBy) || (!deck.private) ?
+            {(uid == deck.createdBy) || (!deck.private) ?
                 <Card>
-                <ul>
-                {
+                    <Card.Body>
+                        {
                             prompts.map((prompt) => {
                                 return (
-                                    <div key={prompt.id}>
-                                        <li>{prompt.body}
-                                        <Button 
-                                        onClick={() => handleDelete(prompt.id)}
-                                        disabled={disabled}
-                                        >Delete
-                                        </Button>
-                                        <EditPrompt 
-                                        promptId={prompt.id}
-                                        body={prompt.body} 
-                                        promptTags={prompt.tags}
-                                        editPrompt={handleEdit}
-                                        allTags={allTags}
-                                        formatTags={formatTags}
-                                        disabled={disabled}
-                                        />
-                                        </li>
-                                    </div>
+                                    <Row key={prompt.id}>
+                                        <Col xs="9">
+                                            <h4>{prompt.title}</h4>
+                                            <p>{prompt.body.substring(0, 85) + "..."}</p>
+                                        </Col>
+                                        <Col xs="3">
+                                            <ConfirmDelete
+                                                handleDelete={() => handleDelete(prompt.id)}
+                                                title={"Delete prompt?"}
+                                                body={"This can't be undone"}
+                                                disabled={disabled}
+                                            />
+                                            <EditPrompt
+                                                promptId={prompt.id}
+                                                body={prompt.body}
+                                                promptTags={prompt.tags}
+                                                title={prompt.title}
+                                                comment={prompt.comment}
+                                                editPrompt={handleEdit}
+                                                allTags={allTags}
+                                                formatTags={formatTags}
+                                                disabled={disabled}
+                                            />
+                                        </Col>
+                                        <hr />
+                                    </Row>
                                 )
                             })
-                        } 
-                </ul>
-            </Card>
-            :
-            <>
-            </>
+                        }
+                    </Card.Body>
+                </Card>
+                :
+                <>
+                </>
             }
         </>
     )

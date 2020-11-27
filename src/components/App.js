@@ -1,4 +1,5 @@
 import "react-toggle/style.css"
+import '../styles/app.css'
 import React from "react"
 import Signup from "./Signup"
 import Dashboard from "./Dashboard"
@@ -10,26 +11,30 @@ import PrivateRoute from './PrivateRoute'
 import ForgotPassword from './ForgotPassword'
 import UpdateProfile from "./UpdateProfile"
 import EditDeck from "./EditDeck"
+import Nav from './Nav';
 
 function App() {
-  return ( 
-    <Container className="d-flex align-items-center justify-content-center"
-      style={{minHeight: "100vh"}}>
-      <div className="w-100" style={{maxWidth: '400px'}}>
+  return (
+    <div className="align-items-center justify-content-center"
+      style={{ minHeight: "100vh" }}>
       <Router>
         <AuthProvider>
-          <Switch>
-            <PrivateRoute exact path="/" component={Dashboard}/>
-            <PrivateRoute path="/update-profile" component={UpdateProfile}/>
-            <Route path="/signup" component={Signup}/>
-            <Route path="/login" component={Login}/>
-            <Route path="/forgot-password" component={ForgotPassword}/>
-            <Route path="/deck/:id" component={EditDeck}/>
-          </Switch>
+          <Nav />
+          <div className="w-100" style={{ maxWidth: '100%' }}>
+            <Switch>
+              <PrivateRoute exact path="/" component={Dashboard} />
+              <Route path="/deck/:id" component={EditDeck} />
+              <Container className="align-items-center justify-content-center">
+              <PrivateRoute path="/update-profile" component={UpdateProfile} />
+              <Route path="/forgot-password" component={ForgotPassword} />
+              <Route path="/signup" component={Signup} />
+              <Route path="/login" component={Login} />
+              </Container>
+            </Switch>
+          </div>
         </AuthProvider>
       </Router>
-      </div>
-    </Container>
+    </div>
   );
 }
 

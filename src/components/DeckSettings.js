@@ -1,12 +1,14 @@
 import React, { useRef, useState, useEffect } from "react"
-import { Form, Button, Card, Alert, InputGroup, Tooltip, OverlayTrigger } from "react-bootstrap"
-import { Link, useHistory } from "react-router-dom"
+import { Form, Button, Card, Alert, InputGroup, Tooltip, OverlayTrigger, Accordion } from "react-bootstrap"
+import { useHistory } from "react-router-dom"
 import { useAuth } from "../contexts/AuthContext"
 import Toggle from 'react-toggle'
+import ConfirmDelete from './ConfirmDelete'
 
-export default function AddDeck(props) {
-    const { deck, onChange, download } = props
+export default function DeckSettings(props) {
+    const { deck, onChange, download, deleteDeck } = props
     const { currentUser } = useAuth()
+    const history = useHistory();
     const deckNameRef = useRef()
     const deckCodeRef = useRef()
     const [privacy, setPrivacy] = useState(deck.private)
@@ -66,8 +68,13 @@ export default function AddDeck(props) {
         document.execCommand('copy');
     }
 
-    function handleDownload () {
+    function handleDownload() {
         download();
+    }
+
+    function handleDelete() {
+        deleteDeck(deck.id)
+        history.push("/")
     }
 
     const renderPrivacyTooltip = (props) => (
@@ -77,85 +84,97 @@ export default function AddDeck(props) {
     );
 
     return (
-        <>{ (uid == deck.createdBy) ?
-            <Card>
-                <Card.Body>
-                    <h2 className="text-center mb-4">Settings</h2>
-                    {error && <Alert variant="danger">{error}</Alert>}
-                    {message && <Alert variant="success">{message}</Alert>}
-                    <Form onSubmit={handleChange}>
-                        <Form.Group id="deck-name">
-                            <Form.Label>Name</Form.Label>
+        <>{(uid == deck.createdBy) ?
+            <Accordion className="mb-2">
+                <Card>
+                    <Accordion.Toggle as={Card.Header} eventKey="0">
+                        <h2>Settings</h2>
+                    </Accordion.Toggle>
+                    <Accordion.Collapse eventKey="0">
+                    <Card.Body>
+                        {error && <Alert variant="danger">{error}</Alert>}
+                        {message && <Alert variant="success">{message}</Alert>}
+                        <Form onSubmit={handleChange}>
+                            <Form.Group id="deck-name">
+                                <Form.Label>Name</Form.Label>
+                                <InputGroup className="mb-3">
+                                    <Form.Control
+                                        ref={deckNameRef}
+                                        placeholder="Deck Name"
+                                        aria-label="Deck Name"
+                                        defaultValue={deck.name}
+                                        maxLength={30}
+                                    />
+                                    <InputGroup.Append>
+                                        <Button type="submit" variant="outline-secondary">Update</Button>
+                                    </InputGroup.Append>
+                                </InputGroup>
+                            </Form.Group>
+                        </Form>
+                        <label>
+                            <OverlayTrigger
+                                placement="right"
+                                delay={{ show: 250, hide: 400 }}
+                                overlay={renderPrivacyTooltip("Turn on to prevent others from accessing your prompts.")}
+                            >
+                                <Button variant="text" size="sm" className="mb-3">Private</Button>
+                            </OverlayTrigger>
+                            <Toggle
+                                icons={false}
+                                checked={deck.private}
+                                onChange={handleChange}
+                                name="private"
+                            />
+                        </label>
+                        <label>
+                            <OverlayTrigger
+                                placement="right"
+                                delay={{ show: 250, hide: 400 }}
+                                overlay={renderPrivacyTooltip("Turn on to allow anyone to add, edit, and delete prompts.")}
+                            >
+                                <Button variant="text" size="sm" className="mb-3">Open Editing</Button>
+                            </OverlayTrigger>
+                            <Toggle
+                                icons={false}
+                                checked={deck.private ? false : deck.openEdit}
+                                onChange={handleChange}
+                                name="openEdit"
+                                disabled={deck.private}
+                            />
+                        </label>
+                        <Form.Group id="deck-code">
+                            <Form.Label>Code</Form.Label>
                             <InputGroup className="mb-3">
                                 <Form.Control
-                                    ref={deckNameRef}
-                                    placeholder="Deck Name"
-                                    aria-label="Deck Name"
-                                    defaultValue={deck.name}
+                                    ref={deckCodeRef}
+                                    placeholder="Deck Code"
+                                    aria-label="Deck Code"
+                                    defaultValue={deck.id}
+                                    readOnly={true}
+                                    onClick={handleCopy}
                                 />
                                 <InputGroup.Append>
-                                    <Button type="submit" variant="outline-secondary">Go</Button>
+                                    <Button onClick={handleCopy} variant="outline-secondary">Copy</Button>
                                 </InputGroup.Append>
                             </InputGroup>
                         </Form.Group>
-                    </Form>
-                    <label>
-                        <OverlayTrigger
-                            placement="right"
-                            delay={{ show: 250, hide: 400 }}
-                            overlay={renderPrivacyTooltip("Turn on to prevent others from accessing your prompts.")}
-                        >
-                            <Button variant="text" size="sm">Private</Button>
-                        </OverlayTrigger>
-                        <Toggle
-                            icons={false}
-                            checked={deck.private}
-                            onChange={handleChange}
-                            name="private"
-                        />
-                    </label>
-                    <label>
-                    <OverlayTrigger
-                            placement="right"
-                            delay={{ show: 250, hide: 400 }}
-                            overlay={renderPrivacyTooltip("Turn on to allow anyone to add, edit, and delete prompts.")}
-                        >
-                            <Button variant="text" size="sm">Open Editing</Button>
-                        </OverlayTrigger>
-                        <Toggle
-                            icons={false}
-                            checked={deck.private ? false : deck.openEdit}
-                            onChange={handleChange}
-                            name="openEdit"
-                            disabled={deck.private}
-                        />
-                    </label>
-                    <Form.Group id="deck-code">
-                        <Form.Label>Code</Form.Label>
-                        <InputGroup className="mb-3">
-                            <Form.Control
-                                ref={deckCodeRef}
-                                placeholder="Deck Code"
-                                aria-label="Deck Code"
-                                defaultValue={deck.id}
-                                readOnly={true}
-                                onClick={handleCopy}
-                            />
-                            <InputGroup.Append>
-                                <Button onClick={handleCopy} variant="outline-secondary">Copy</Button>
-                            </InputGroup.Append>
-                        </InputGroup>
-                    </Form.Group>
-                    <Button className="w-100" onClick={handleDownload}>
+                        <Button className="w-100" onClick={handleDownload}>
                             Download prompts to .CSV
                     </Button>
-                </Card.Body>
-            </Card>
+                        <ConfirmDelete
+                            handleDelete={handleDelete}
+                            title={"Delete deck?"}
+                            body={"All prompts will be deleted and this can't be undone."}
+                            disabled={false}
+                        />
+                    </Card.Body>
+                    </Accordion.Collapse>
+                </Card>
+            </Accordion>
             :
-            <Card>
-
-            </Card>
-}
+            <>
+            </>
+        }
         </>
     )
 }

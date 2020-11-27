@@ -32,7 +32,7 @@ export default function Signup() {
     }
 
     return (
-        <div>
+        <div className="col-padding">
             <Card>
                 <Card.Body>
                     <h2 className="text-center mb-4">Sign Up</h2>
