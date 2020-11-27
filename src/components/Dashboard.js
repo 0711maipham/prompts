@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react'
-import { Card, Button, Alert } from 'react-bootstrap'
+import { Button, Container } from 'react-bootstrap'
 import { Link, useHistory } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import AddDeck from './AddDeck'
@@ -64,7 +64,7 @@ export default function Dashboard(props) {
     }
 
     return (
-        <>
+        <Container>
             {/* <Card>
             <Card.Body>
                 <h2 className="text-center mb-4">Profile</h2>
@@ -81,6 +81,6 @@ export default function Dashboard(props) {
             <div className="w-100 text-center mt-2">
                 <Button variant="link" onClick={handleLogout}>Log Out</Button>
             </div>
-        </>
+        </Container>
     );
 }
