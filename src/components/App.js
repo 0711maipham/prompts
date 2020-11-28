@@ -15,9 +15,10 @@ import Nav from './Nav';
 import ReactDOM from 'react-dom'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { fab } from '@fortawesome/free-brands-svg-icons'
-import { faCheckSquare, faCoffee, faHome, faCog, faSignInAlt, faMinusSquare, faEdit } from '@fortawesome/free-solid-svg-icons'
+import { far } from '@fortawesome/free-regular-svg-icons'
+import { faCheckSquare, faCoffee, faHome, faCog, faSignInAlt, faMinusSquare, faEdit, faClone } from '@fortawesome/free-solid-svg-icons'
 
-library.add(fab, faCheckSquare, faCoffee, faHome, faCog, faSignInAlt, faMinusSquare, faEdit)
+library.add(fab, far, faCheckSquare, faCoffee, faHome, faCog, faSignInAlt, faMinusSquare, faEdit, faClone)
 
 function App() {
   return (
