@@ -6,6 +6,7 @@ import AddPrompt from './AddPrompt'
 import PromptsList from './PromptsList'
 import FilterPrompts from './FilterPrompts'
 import DeckSettings from './DeckSettings'
+import { useAuth } from '../contexts/AuthContext'
 
 class EditDeck extends React.Component {
     constructor() {
@@ -13,11 +14,15 @@ class EditDeck extends React.Component {
         this.state = {
             deckId: window.location.pathname.replace("/deck/", ""),
             deck: {},
+            decks: [],
             prompts: [],
             allTags: [],
             andOr: false,
+            currentUserUid: ""
         }
         console.log(this.state)
+        this.setCurrentUserDecks = this.setCurrentUserDecks.bind(this);
+        this.copyDeck = this.copyDeck.bind(this);
     }
 
     render() {
@@ -33,6 +38,9 @@ class EditDeck extends React.Component {
                                     andOr={this.setAndOr}
                                     filterPrompts={this.filterPrompts}
                                     deck={this.state.deck}
+                                    decks={this.state.decks}
+                                    setCurrentUserDecks={this.setCurrentUserDecks}
+                                    copyDeck={this.copyDeck}
                                     promptCount={this.state.prompts.length}
                                 ></FilterPrompts>
                             </Col>
@@ -93,6 +101,61 @@ class EditDeck extends React.Component {
             //console.log(this.state.deck);
         });
         this.getPrompts(this.state.deckId);
+    }
+
+    setCurrentUserDecks(uid) {
+        //get the CurrentUser from a child component because EditDeck itself cant use the Auth hooks
+        firebase.firestore().collection('deck').where("createdBy", "==", uid).onSnapshot(serverUpdate => {
+            const decks = serverUpdate.docs.map(_doc => {
+                const data = _doc.data();
+                data['id'] = _doc.id;
+                return data;
+            })
+            this.setState({
+                decks: decks,
+                currentUserUid: uid
+            })
+        });
+    }
+
+    async copyDeck(exportToId) {
+        const deckToCopy = this.state.deck;
+        const uid = this.state.currentUserUid;
+        let newId = exportToId;
+
+        if (deckToCopy.private) return false
+        
+        if(!exportToId) {
+            //Create a new deck with the old deck's settings
+            const newFromDb = await firebase.firestore().collection('deck').add({
+                name: deckToCopy.name + " Copy",
+                createdBy: uid,
+                openEdit: deckToCopy.openEdit,
+                private: deckToCopy.private,
+                dateCreated: firebase.firestore.FieldValue.serverTimestamp(),
+                dateEdited: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            newId = newFromDb.id;
+        }
+
+        //Create new prompts based on the old decks prompts
+        await firebase.firestore().collection('prompts').where("deckId", "==", deckToCopy.id).get().then(function (querySnapshot) {
+            var batch = firebase.firestore().batch();
+
+            querySnapshot.forEach(function (doc) {
+                var newPrompt = firebase.firestore().collection('prompts').doc();
+                batch.set(newPrompt,{
+                    deckId: newId,
+                    body: doc.data().body,
+                    tags: doc.data().tags,
+                    comment: doc.data().comment,
+                    title: doc.data().title,
+                    dateUpdated: firebase.firestore.FieldValue.serverTimestamp()
+                });
+            });
+
+            batch.commit();
+        })
     }
 
     //Combine every tag in the deck into one array
@@ -213,8 +276,6 @@ class EditDeck extends React.Component {
             // Commit the batch
             batch.commit();
         }).then(function () {
-            // Delete completed!
-            // ...
             firebase.firestore().collection('deck').doc(id).delete();
         });
     }

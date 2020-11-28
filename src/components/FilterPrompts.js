@@ -1,9 +1,10 @@
 import React, { useRef, useState, useEffect } from "react"
-import { Form, Button, Card, Row, Col, OverlayTrigger, Tooltip, Accordion } from "react-bootstrap"
+import { Form, Button, Card, Row, Col, OverlayTrigger, Tooltip, Accordion, Fade } from "react-bootstrap"
 import { useAuth } from "../contexts/AuthContext"
 import { Link } from "react-router-dom"
 import Toggle from 'react-toggle'
 import Tags from "./Tags"
+import ExportPrompts from "./ExportPrompts"
 
 export default function FilterPrompts(props) {
     const { currentUser } = useAuth();
@@ -14,7 +15,7 @@ export default function FilterPrompts(props) {
     const [tags, setTags] = useState([]);
     const [uid, setUid] = useState("")
     const [prompt, setPrompt] = useState(null);
-    const { allTags, deck, formatTags, andOr, filterPrompts, promptCount } = props
+    const { allTags, deck, decks, andOr, filterPrompts, promptCount, setCurrentUserDecks, copyDeck, exportDeck } = props
 
     useEffect(() => {
         console.log("use effect in filter prompt called");
@@ -26,14 +27,12 @@ export default function FilterPrompts(props) {
         }
     }, [])
 
+    function sendCurrentUser() {
+        setCurrentUserDecks(currentUser.uid)
+    }
+
     async function handleSubmit(e) {
         e.preventDefault()
-
-        // let uniqTags = [];
-        // if (tagsRef.current.value) {
-        //     console.log(tagsRef.current.value)
-        //     uniqTags = formatTags(tagsRef.current.value)
-        // }
 
         try {
             setMessage("")
@@ -72,6 +71,20 @@ export default function FilterPrompts(props) {
                 <span className="subline">
                     {promptCount + " prompts"}
                 </span>
+                {
+                    uid !== "anon" ?
+                <span>
+                <ExportPrompts
+                    copyDeck={copyDeck}
+                    exportDeck={exportDeck}
+                    deck={deck}
+                    decks={decks}
+                    sendCurrentUser={sendCurrentUser}
+                ></ExportPrompts>
+                </span>
+                :
+                ""
+                }
             </h2>
             </div>
                 <Card>
@@ -140,7 +153,7 @@ export default function FilterPrompts(props) {
                             <Col md="7">
                                 {
                                     prompt !== null ?
-
+                                        <Fade in={true} appear={true} timeout={500}>
                                         <div className="">
                                             <h3>{prompt.title}</h3>
                                             <p>{prompt.body}</p>
@@ -152,7 +165,7 @@ export default function FilterPrompts(props) {
                                                 )
                                             })}
                                         </div>
-
+                                        </Fade>
                                         :
 
                                         <div className="placeholder-box mt-5">

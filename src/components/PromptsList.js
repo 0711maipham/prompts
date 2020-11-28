@@ -1,17 +1,19 @@
-import React, { useRef, useState, useEffect } from "react"
-import { Card, Row, Col, Accordion } from "react-bootstrap"
+import React, { useRef, useState, useEffect, useContext } from "react"
+import { Button, Card, Row, Col, Accordion, Fade } from "react-bootstrap"
 import { useAuth } from "../contexts/AuthContext"
 import EditPrompt from "./EditPrompt"
 import ConfirmDelete from "./ConfirmDelete"
 
 export default function PromptList(props) {
     const { currentUser } = useAuth();
-    const bodyRef = useRef()
-    const tagsRef = useRef()
+    const expandRef = useRef();
     const [error, setError] = useState("")
     const [message, setMessage] = useState("")
     const [loading, setLoading] = useState(false)
     const [uid, setUid] = useState("")
+    const [expandPrompt, setExpandPrompt] = useState(false)
+    const [expandAccordion, setExpandAccordion] = useState(false)
+    const handleAccordion = () => { setExpandAccordion(!expandAccordion) }
     const [disabled, setDisabled] = useState(true)
     const { prompts, deck, deletePrompt, editPrompt, allTags, formatTags } = props
 
@@ -44,6 +46,11 @@ export default function PromptList(props) {
         editPrompt(id, body, tags, comment, title)
     }
 
+    function handleExpand() {
+        console.log("expanded")
+        setExpandPrompt(!expandPrompt);
+    }
+
     //console.log("prompts from prompt list", prompts)
 
     return (
@@ -51,10 +58,15 @@ export default function PromptList(props) {
             {(uid == deck.createdBy) || (!deck.private) ?
                 <Accordion >
                     <Card>
-                        <Accordion.Toggle as={Card.Header} eventKey="0">
-                            <h2>Contents</h2>
-                        </Accordion.Toggle>
-                        <Accordion.Collapse eventKey="0">
+                        <Card.Header>
+                            <Accordion.Toggle as={Button} onClick={handleAccordion} variant="link" eventKey="0">
+                                <h2>Contents</h2>
+                            </Accordion.Toggle>
+                            <Fade in={expandAccordion} dimension="width" timeout={500}>
+                                <Button onClick={handleExpand} className="btn-secondary icon-button btn-small">{expandPrompt ? "Hide prompts" : "Show full prompts"}</Button>
+                            </Fade>
+                        </Card.Header>
+                        <Accordion.Collapse ref={expandRef} eventKey="0">
                             <Card.Body className="prompts-list">
                                 {
                                     prompts.map((prompt) => {
@@ -62,7 +74,21 @@ export default function PromptList(props) {
                                             <Row key={prompt.id} className="bottom-divider">
                                                 <Col xs="9">
                                                     <h4>{prompt.title}</h4>
-                                                    <p>{prompt.body.substring(0, 85) + "..."}</p>
+                                                    <p>{expandPrompt ? prompt.body.substring(0, 85) : prompt.body.substring(0, 85) + "..."}
+                                                    <Fade in={expandPrompt} dimension="width" timeout={500} unmountOnExit={true}>
+                                                        <span>{prompt.body.substring(85, prompt.body.length)}</span>
+                                                    </Fade>
+                                                    </p>
+                                                    <Fade in={expandPrompt} timeout={500} unmountOnExit={true}>
+                                                        <div>
+                                                            <p className="subline">{prompt.comment}</p>
+                                                            {prompt.tags.map((tag) => {
+                                                                return (
+                                                                    <span key={tag.id} className="tag">{tag.text}</span>
+                                                                )
+                                                            })}
+                                                        </div>
+                                                    </Fade>
                                                 </Col>
                                                 <Col xs="3">
                                                     <EditPrompt
