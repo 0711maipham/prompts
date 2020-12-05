@@ -41,7 +41,7 @@ export default function AddPrompt(props) {
             await addPrompt(bodyRef.current.value, tags, commentRef.current.value, titleRef.current.value)
             setMessage("Added successfully.")
         } catch {
-            setError("Failed to add prompt.")
+            setError("Failed to add spark.")
         }
         e.target.reset();
         //resetting the Tags doesnt update the Tags state of the Tags component for some reason... :(
@@ -60,7 +60,7 @@ export default function AddPrompt(props) {
                 <Accordion className="mb-2">
                     <Card>
                         <Accordion.Toggle as={Card.Header} eventKey="0">
-                            <h2>Add a Prompt</h2>
+                            <h2>Add a Spark</h2>
                         </Accordion.Toggle>
                         <Accordion.Collapse eventKey="0">
                             <Card.Body>
@@ -72,7 +72,7 @@ export default function AddPrompt(props) {
                                         <Form.Control type="text" ref={titleRef} maxLength={50} />
                                     </Form.Group>
                                     <Form.Group id="body">
-                                        <Form.Label className="mr-2">Prompt</Form.Label><span className="subline">Required.</span>
+                                        <Form.Label className="mr-2">Body</Form.Label><span className="subline">Required.</span>
                                         <Form.Control as="textarea" ref={bodyRef} maxLength={550} required />
                                     </Form.Group>
                                     <Form.Group id="comment">
@@ -96,7 +96,7 @@ export default function AddPrompt(props) {
                 :
                 <div className="placeholder-box">
                     <p>
-                        Editing disabled for this deck.
+                        Editing disabled for this pod.
                     </p>
                 </div>
             }

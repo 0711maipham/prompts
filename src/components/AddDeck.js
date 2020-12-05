@@ -21,7 +21,7 @@ export default function AddDeck(props) {
             setLoading(true)
             await newDeck(deckNameRef.current.value)
         } catch {
-            setError("Failed to create deck")
+            setError("Failed to create pod")
         }
 
         setLoading(false)
@@ -44,29 +44,29 @@ export default function AddDeck(props) {
                 <Card.Body>
                     <Row>
                         <Col sm="6" className="right-divider col-padding mb-3">
-                    <h2 className="text-center mb-4">Create a New Deck</h2>
+                    <h2 className="text-center mb-4">Create a New Pod</h2>
                     {error && <Alert variant="danger">{error}</Alert>}
                     <Form onSubmit={handleSubmit}>
                         <Form.Group id="deck-name">
-                            <Form.Label>Deck Name</Form.Label>
+                            <Form.Label>Pod Name</Form.Label>
                             <Form.Control type="text" ref={deckNameRef} maxLength={30} required />
                         </Form.Group>
                         <Button disabled={loading} className="w-100" type="submit">
-                            {loading ? "Adding Deck..." : "Add Deck"}
+                            {loading ? "Adding Pod..." : "Add Pod"}
                         </Button>
                     </Form>
                     </Col>
                     <Col sm="6" className="col-padding mb-3">
-                    <h2 className="text-center mb-4">Load Existing Deck</h2>
+                    <h2 className="text-center mb-4">Load Existing Pod</h2>
                     {error && <Alert variant="danger">{error}</Alert>}
                     <Form onSubmit={handleLoadDeckSubmit}>
                         <Form.Group id="deck-code">
-                        <Form.Label>Load from deck code</Form.Label>
+                        <Form.Label>Load from pod code</Form.Label>
                             <InputGroup className="mb-3">
                                 <Form.Control
                                     ref={deckCodeRef}
                                     placeholder="Code"
-                                    aria-label="Deck code"
+                                    aria-label="Pod code"
                                 />
                                 <InputGroup.Append>
                                     <Button type="submit" variant="outline-secondary">Go</Button>

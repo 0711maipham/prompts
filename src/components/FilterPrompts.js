@@ -69,7 +69,7 @@ export default function FilterPrompts(props) {
             <h2>
                 {deck.name + " : "}
                 <span className="subline">
-                    {promptCount + " prompts"}
+                    {promptCount + " sparks"}
                 </span>
                 {
                     uid !== "anon" ?
@@ -91,7 +91,7 @@ export default function FilterPrompts(props) {
                     <Card.Body>
                         <Row>
                             <Col md="5" className="mb-3">
-                                <h2 className="text-center mb-4">Draw Prompt</h2>
+                                <h2 className="text-center mb-4">Draw Spark</h2>
                                 <Form onSubmit={handleSubmit}>
                                     {/* <Form.Control as="select" onChange={handleDropdown}>
                             <option value="" selected>Select existing tag</option>
@@ -171,7 +171,7 @@ export default function FilterPrompts(props) {
                                         <div className="placeholder-box mt-5">
                                             <p>
                                                 {
-                                                    promptCount < 1 ? "This deck is empty, add a few prompts to get started." : 'Click "Draw Random" to get started.'
+                                                    promptCount < 1 ? "This pod is empty, add a few sparks to get started." : 'Click "Draw Random" to get started.'
                                                 }
                                             </p>
                                         </div>
@@ -183,7 +183,7 @@ export default function FilterPrompts(props) {
                 </>
                 :
                 <Card>
-                    This Deck is Private
+                    This Pod is Private
                 </Card>
             }
         </>

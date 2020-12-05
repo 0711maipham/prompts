@@ -36,7 +36,7 @@ export default function Dashboard(props) {
     }
 
     async function newDeck(name) {
-        console.log("New Deck Added: " + name + " " + currentUser.uid)
+        //console.log("New Pod Added: " + name + " " + currentUser.uid)
 
         // const deck = {
         //     name: name,
