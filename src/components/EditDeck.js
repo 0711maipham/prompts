@@ -75,7 +75,7 @@ class EditDeck extends React.Component {
                     :
                     <Card>
                         <Card.Body>
-                            This deck does not exist.
+                            This pod does not exist.
                     </Card.Body>
                         <Card.Footer>
                             <Link to="/">Go Back</Link>

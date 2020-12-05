@@ -63,7 +63,7 @@ export default function PromptList(props) {
                                 <h2>Contents</h2>
                             </Accordion.Toggle>
                             <Fade in={expandAccordion} dimension="width" timeout={500}>
-                                <Button onClick={handleExpand} className="btn-secondary icon-button btn-small">{expandPrompt ? "Hide prompts" : "Show full prompts"}</Button>
+                                <Button onClick={handleExpand} className="btn-secondary icon-button btn-small">{expandPrompt ? "Hide sparks" : "Show full sparks"}</Button>
                             </Fade>
                         </Card.Header>
                         <Accordion.Collapse ref={expandRef} eventKey="0">
@@ -104,7 +104,7 @@ export default function PromptList(props) {
                                                     />
                                                     <ConfirmDelete
                                                         handleDelete={() => handleDelete(prompt.id)}
-                                                        title={"Delete prompt?"}
+                                                        title={"Delete spark?"}
                                                         body={"This can't be undone"}
                                                         disabled={disabled}
                                                     />

@@ -25,7 +25,7 @@ export default function ExportPrompts(props) {
             setError("")
             setLoading(true)
             await copyDeck();
-            setMessage("Deck successfully copied!")
+            setMessage("Pod successfully copied!")
         } catch {
             setError("Copy failed")
         }
@@ -38,7 +38,7 @@ export default function ExportPrompts(props) {
             setError("")
             setLoading(true)
             await copyDeck(deckCodeRef.current.value);
-            setMessage("Prompts successfully exported!")
+            setMessage("Sparks successfully exported!")
         } catch {
             setError("Export failed")
         }
@@ -64,7 +64,7 @@ export default function ExportPrompts(props) {
                         <Form.Group id="deck-select">
                             <Form.Label>Or</Form.Label>
                             <Form.Control ref={deckCodeRef} as="select">
-                                <option value="" disabled selected>Export into existing deck</option>
+                                <option value="" disabled selected>Export into existing pod</option>
                                 {
                                     decks.filter((d) => d.id !== deck.id).map((deck, index) => {
                                         return (
@@ -76,7 +76,7 @@ export default function ExportPrompts(props) {
                                 }
                             </Form.Control>
                         </Form.Group>
-                        <Button disabled={loading} className="w-100" onClick={handleExport}>Export Prompts</Button>
+                        <Button disabled={loading} className="w-100" onClick={handleExport}>Export Sparks</Button>
                     </Form>
                 </Modal.Body>
                 <Modal.Footer>

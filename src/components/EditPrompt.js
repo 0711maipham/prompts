@@ -59,7 +59,7 @@ export default function EditPrompt(props) {
 
             <Modal show={show} onHide={handleClose}>
                 <Modal.Header closeButton>
-                    <Modal.Title>Edit Prompt</Modal.Title>
+                    <Modal.Title>Edit Spark</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <Form onSubmit={handleSubmit}>
@@ -68,7 +68,7 @@ export default function EditPrompt(props) {
                             <Form.Control onChange={() => setChanged(true)} type="text" ref={titleRef} defaultValue={title} maxLength={50} />
                         </Form.Group>
                         <Form.Group id="prompt-body">
-                            <Form.Label className="mr-2">Prompt</Form.Label> <span className="subline">Required.</span>
+                            <Form.Label className="mr-2">Body</Form.Label> <span className="subline">Required.</span>
                             <Form.Control onChange={() => setChanged(true)} as="textarea" ref={bodyRef} defaultValue={body} maxLength={550} required />
                         </Form.Group>
                         <Form.Group id="comment">

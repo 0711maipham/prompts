@@ -100,8 +100,8 @@ export default function DeckSettings(props) {
                                 <InputGroup className="mb-3">
                                     <Form.Control
                                         ref={deckNameRef}
-                                        placeholder="Deck Name"
-                                        aria-label="Deck Name"
+                                        placeholder="Pod Name"
+                                        aria-label="Pod Name"
                                         defaultValue={deck.name}
                                         maxLength={30}
                                     />
@@ -115,7 +115,7 @@ export default function DeckSettings(props) {
                             <OverlayTrigger
                                 placement="right"
                                 delay={{ show: 250, hide: 400 }}
-                                overlay={renderPrivacyTooltip("Turn on to prevent others from accessing your prompts.")}
+                                overlay={renderPrivacyTooltip("Turn on to prevent others from accessing your sparks.")}
                             >
                                 <Button variant="text" size="sm" className="mb-3">Private</Button>
                             </OverlayTrigger>
@@ -130,7 +130,7 @@ export default function DeckSettings(props) {
                             <OverlayTrigger
                                 placement="right"
                                 delay={{ show: 250, hide: 400 }}
-                                overlay={renderPrivacyTooltip("Turn on to allow anyone to add, edit, and delete prompts.")}
+                                overlay={renderPrivacyTooltip("Turn on to allow anyone to add, edit, and delete sparks.")}
                             >
                                 <Button variant="text" size="sm" className="mb-3">Open Editing</Button>
                             </OverlayTrigger>
@@ -147,8 +147,8 @@ export default function DeckSettings(props) {
                             <InputGroup className="mb-3">
                                 <Form.Control
                                     ref={deckCodeRef}
-                                    placeholder="Deck Code"
-                                    aria-label="Deck Code"
+                                    placeholder="Pod Code"
+                                    aria-label="Pod Code"
                                     defaultValue={deck.id}
                                     readOnly={true}
                                     onClick={handleCopy}
@@ -159,12 +159,12 @@ export default function DeckSettings(props) {
                             </InputGroup>
                         </Form.Group>
                         <Button className="w-100" onClick={handleDownload}>
-                            Download prompts to .CSV
+                            Download sparks to .CSV
                     </Button>
                         <ConfirmDelete
                             handleDelete={handleDelete}
-                            title={"Delete deck?"}
-                            body={"All prompts will be deleted and this can't be undone."}
+                            title={"Delete pod?"}
+                            body={"All sparks will be deleted and this can't be undone."}
                             disabled={false}
                         />
                     </Card.Body>
