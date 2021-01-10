@@ -47,7 +47,7 @@ export default function ExportPrompts(props) {
 
     return (
         <>
-            <Button variant="text" onClick={handleShow}>
+            <Button variant="text" disabled={deck.private} onClick={handleShow}>
                 <FontAwesomeIcon icon={['far', 'clone']} />
             </Button>
 
