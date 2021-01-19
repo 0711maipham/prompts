@@ -59,9 +59,9 @@ export default function Login() {
                                 </div>
                             </Col>
                             <Col sm="6" className="col-padding mb-3">
-                                <h2 className="text-center mb-4">Load Deck</h2>
+                                <h2 className="text-center mb-4">Load Pod</h2>
                                 <p>
-                                You can access public prompts without creating an account or logging in. Paste the deck code below to proceed.
+                                You can access public sparks without creating an account or logging in. Paste the pod code below to proceed.
                                 </p>
                                 <Form onSubmit={handleLoadDeckSubmit}>
                                     <Form.Group id="deck-code">

@@ -18,7 +18,7 @@ export default function FilterPrompts(props) {
     const { allTags, deck, decks, andOr, filterPrompts, promptCount, setCurrentUserDecks, copyDeck, exportDeck } = props
 
     useEffect(() => {
-        console.log("use effect in filter prompt called");
+        //console.log("use effect in filter prompt called");
         if (currentUser == null) {
             setUid("anon")
         }
