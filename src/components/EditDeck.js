@@ -225,6 +225,7 @@ class EditDeck extends React.Component {
                 data['id'] = _doc.id;
                 return data;
             })
+            prompts.sort((a,b) => (b.dateUpdated < a.dateUpdated) ? 1 : -1 )
             this.setState({
                 prompts: prompts,
             })
