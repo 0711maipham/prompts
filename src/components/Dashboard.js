@@ -46,6 +46,7 @@ export default function Dashboard(props) {
             createdBy: currentUser.uid,
             openEdit: false,
             private: false,
+            markDone: true,
             dateCreated: firebase.firestore.FieldValue.serverTimestamp(),
             dateEdited: firebase.firestore.FieldValue.serverTimestamp()
         });

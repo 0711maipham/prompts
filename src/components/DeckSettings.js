@@ -13,6 +13,7 @@ export default function DeckSettings(props) {
     const deckCodeRef = useRef()
     const [privacy, setPrivacy] = useState(deck.private)
     const [openEdit, setOpenEdit] = useState(deck.openEdit)
+    const [markDone, setMarkDone] = useState(deck.markDone)
     const [uid, setUid] = useState("")
     const [error, setError] = useState("")
     const [message, setMessage] = useState("")
@@ -21,6 +22,7 @@ export default function DeckSettings(props) {
         console.log("use effect in deck settings called");
         setPrivacy(deck.private);
         setOpenEdit(deck.openEdit)
+        setMarkDone(deck.markDone)
         if (currentUser == null) {
             setUid("anon")
         }
@@ -48,6 +50,13 @@ export default function DeckSettings(props) {
             await setOpenEdit(!openEdit)
             try {
                 onChange(e.target.name, !deck.openEdit)
+            }
+            catch { setError("Could no update settings") }
+        }
+        else if (e.target.name == "markDone") {
+            await setMarkDone(!markDone)
+            try {
+                onChange(e.target.name, !deck.markDone)
             }
             catch { setError("Could no update settings") }
         }
@@ -140,6 +149,21 @@ export default function DeckSettings(props) {
                                 onChange={handleChange}
                                 name="openEdit"
                                 disabled={deck.private}
+                            />
+                        </label>
+                        <label>
+                            <OverlayTrigger
+                                placement="right"
+                                delay={{ show: 250, hide: 400 }}
+                                overlay={renderPrivacyTooltip("Turn on to allow anyone to mark sparks as done.")}
+                            >
+                                <Button variant="text" size="sm" className="mb-3">Allow Mark as Done</Button>
+                            </OverlayTrigger>
+                            <Toggle
+                                icons={false}
+                                checked={deck.markDone}
+                                onChange={handleChange}
+                                name="markDone"
                             />
                         </label>
                         <Form.Group id="deck-code">

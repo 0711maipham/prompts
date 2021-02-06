@@ -43,6 +43,7 @@ class EditDeck extends React.Component {
                                     promptCount={this.state.prompts.length}
                                     deletePrompt={this.deletePrompt}
                                     editPrompt={this.editPrompt}
+                                    markDone={this.markDone}
                                 ></FilterPrompts>
                             </Col>
                         </Row>
@@ -66,6 +67,7 @@ class EditDeck extends React.Component {
                                     prompts={this.state.prompts}
                                     deletePrompt={this.deletePrompt}
                                     editPrompt={this.editPrompt}
+                                    markDone={this.markDone}
                                     allTags={this.state.allTags}
                                     formatTags={this.formatTags}
                                     deck={this.state.deck}
@@ -151,6 +153,8 @@ class EditDeck extends React.Component {
                     tags: doc.data().tags,
                     comment: doc.data().comment,
                     title: doc.data().title,
+                    done: false,
+                    dateCreated: firebase.firestore.FieldValue.serverTimestamp(),
                     dateUpdated: firebase.firestore.FieldValue.serverTimestamp()
                 });
             });
@@ -194,7 +198,6 @@ class EditDeck extends React.Component {
     updateSettings = (setting, settingValue) => {
         //console.log("update settings called", setting, settingValue)
         firebase.firestore().collection('deck').doc(this.state.deck.id).update(setting, settingValue);
-
     }
 
     download = () => {
@@ -243,7 +246,15 @@ class EditDeck extends React.Component {
             tags: tags,
             comment: comment,
             title: promptTitle,
+            done: false,
+            dateCreated: firebase.firestore.FieldValue.serverTimestamp(),
             dateUpdated: firebase.firestore.FieldValue.serverTimestamp()
+        });
+    }
+
+    markDone = (id, marked) => {
+        firebase.firestore().collection('prompts').doc(id).update({
+            done: marked
         });
     }
 
@@ -296,27 +307,35 @@ class EditDeck extends React.Component {
         //console.log(tags, this.state.prompts.length, this.state.andOr);
         let andOr = this.state.andOr; //FALSE= OR; TRUE= AND
         let filteredPrompts = [];
+        let unfilteredPrompts = []
         //let and = (arr, target) => target.every(v => arr.includes(v));
         //let or = (arr, target) => target.some(v => arr.indexOf(v) >= 0);
 
+        for(var a = 0; a < this.state.prompts.length; a++) {
+            if (!this.state.prompts[a].done) {
+                unfilteredPrompts.push(this.state.prompts[a])
+            }
+        }
+        console.log(unfilteredPrompts)
+
         if (tags.length == 0) {
-            filteredPrompts = this.state.prompts;
+            filteredPrompts = unfilteredPrompts;
         }
         else {
             //filter prompts, then pick from remaining prompts
             if (andOr) { // "AND" query
-                for (var i = 0; i < this.state.prompts.length; i++) {
+                for (var i = 0; i < unfilteredPrompts.length; i++) {
                     // if (and(this.state.prompts[i].tags, tags)) {
                     //     filteredPrompts.push(this.state.prompts[i]);
                     // }
 
-                    if (tags.every(tag => this.state.prompts[i].tags.find(x => x.id === tag.id))) {
-                        filteredPrompts.push(this.state.prompts[i])
+                    if (tags.every(tag => unfilteredPrompts[i].tags.find(x => x.id === tag.id))) {
+                        filteredPrompts.push(unfilteredPrompts[i])
                     }
                 }
             }
             else { // "OR" query
-                for (var i = 0; i < this.state.prompts.length; i++) {
+                for (var i = 0; i < unfilteredPrompts.length; i++) {
                     // console.log(this.state.prompts[i].tags, tags)
                     // if (or(this.state.prompts[i].tags, tags)) {
                     //     filteredPrompts.push(this.state.prompts[i]);
@@ -328,8 +347,8 @@ class EditDeck extends React.Component {
                     //     }
                     // }
 
-                    if (tags.some(tag => this.state.prompts[i].tags.find(x => x.id === tag.id))) {
-                        filteredPrompts.push(this.state.prompts[i])
+                    if (tags.some(tag => unfilteredPrompts.tags.find(x => x.id === tag.id))) {
+                        filteredPrompts.push(unfilteredPrompts[i])
                     }
                 }
             }

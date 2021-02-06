@@ -66,6 +66,18 @@ a {
     border-color: #5C5C5C;
 }
 
+.btn-tertiary {
+    color: #fff;
+    background-color: #4f4f4f;
+    border-color: #6A6A6A
+}
+
+.btn-tertiary:hover {
+    color: #fff;
+    background-color: #424242;
+    border-color: #424242;
+}
+
 .btn-primary:disabled, .btn-secondary:disabled {
     opacity: .5;
 }
@@ -137,6 +149,10 @@ a {
     overflow-y: scroll;
 }
 
+.prompt-done p, .prompt-done h4 {
+    opacity: .3;
+}
+
 @media only screen and (min-width: 576px) {
     .right-divider {
         border-right: 1px solid #3C3C3C;
@@ -170,4 +186,12 @@ a {
     font-size: .7em;
     border-radius: 12px;
     color: #fff;
+}
+
+.react-toggle--checked .react-toggle-track {
+    background-color: #70B0B4;
+}
+
+.react-toggle--checked .react-toggle-track:hover {
+    background-color: #66989F !important;
 }

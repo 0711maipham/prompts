@@ -26,6 +26,19 @@ export default function Nav() {
                                 }
                             </Link>
                         </li>
+                        <li className="Nav__item">
+                                {currentUser ? 
+                                <Link className="Nav__link" to="/saved-decks">
+                                <FontAwesomeIcon icon="heart" />
+                                </Link>
+                                :
+                                ""}
+                        </li>
+                        {/* <li className="Nav__item">
+                            <Link className="Nav__link" to="/">
+                                <FontAwesomeIcon icon="question-circle" />
+                            </Link>
+                        </li> */}
                     </ul>
                 </div>
             </div>

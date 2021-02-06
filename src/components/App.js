@@ -4,6 +4,7 @@ import React from "react"
 import Signup from "./Signup"
 import Dashboard from "./Dashboard"
 import Login from "./Login"
+import SavedDecks from "./SavedDecks"
 import { Container } from "react-bootstrap"
 import { AuthProvider } from "../contexts/AuthContext"
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom"
@@ -16,9 +17,9 @@ import ReactDOM from 'react-dom'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { fab } from '@fortawesome/free-brands-svg-icons'
 import { far } from '@fortawesome/free-regular-svg-icons'
-import { faCheckSquare, faCoffee, faHome, faCog, faSignInAlt, faMinusSquare, faEdit, faClone } from '@fortawesome/free-solid-svg-icons'
+import { faCheckSquare, faCoffee, faHome, faCog, faSignInAlt, faMinusSquare, faEdit, faClone, faHeart, faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
 
-library.add(fab, far, faCheckSquare, faCoffee, faHome, faCog, faSignInAlt, faMinusSquare, faEdit, faClone)
+library.add(fab, far, faCheckSquare, faCoffee, faHome, faCog, faSignInAlt, faMinusSquare, faEdit, faClone, faHeart, faQuestionCircle)
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
               <PrivateRoute exact path="/" component={Dashboard} />
               <Route path="/deck/:id" component={EditDeck} />
               <Container className="align-items-center justify-content-center">
+              <PrivateRoute exact path="/saved-decks" component={SavedDecks} />
               <PrivateRoute path="/update-profile" component={UpdateProfile} />
               <Route path="/forgot-password" component={ForgotPassword} />
               <Route path="/signup" component={Signup} />

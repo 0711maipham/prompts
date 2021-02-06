@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from "react"
 import { Form, Button, Card, Row, Col, OverlayTrigger, Tooltip, Accordion, Fade } from "react-bootstrap"
 import { useAuth } from "../contexts/AuthContext"
-import { Link } from "react-router-dom"
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Toggle from 'react-toggle'
 import Tags from "./Tags"
 import ExportPrompts from "./ExportPrompts"
@@ -17,8 +17,9 @@ export default function FilterPrompts(props) {
     const [tags, setTags] = useState([]);
     const [uid, setUid] = useState("")
     const [prompt, setPrompt] = useState(null);
-    const [disabled, setDisabled] = useState(true)
-    const { allTags, deck, decks, andOr, filterPrompts, promptCount, setCurrentUserDecks, copyDeck, exportDeck, deletePrompt, editPrompt } = props
+    const [disabled, setDisabled] = useState(true);
+    const { allTags, deck, decks, andOr, filterPrompts, promptCount, setCurrentUserDecks, copyDeck, exportDeck, deletePrompt, editPrompt, markDone } = props
+    const [done, setDone] = useState();
 
     useEffect(() => {
         //console.log("use effect in filter prompt called");
@@ -39,6 +40,12 @@ export default function FilterPrompts(props) {
         }
     })
 
+    useEffect(() => {
+        if(prompt) {
+            setDone(prompt.done)
+        }
+    }, [])
+
     function sendCurrentUser() {
         setCurrentUserDecks(currentUser.uid)
     }
@@ -50,7 +57,10 @@ export default function FilterPrompts(props) {
             setMessage("")
             setError("")
             setLoading(true)
-            await filterPrompts(tags).then((res) => setPrompt(res));
+            await filterPrompts(tags).then((res) => {
+                setPrompt(res)
+                setDone(res.done)
+            });
             setMessage("Success")
             console.log(prompt)
         } catch {
@@ -71,6 +81,12 @@ export default function FilterPrompts(props) {
     function handleDelete(id, current) {
         deletePrompt(id)
         setPrompt(null);
+    }
+
+    function handleDone(marked) {
+        console.log(prompt.done, marked)
+        setDone(marked);
+        markDone(prompt.id, marked);
     }
 
     function handleEdit(id, body, tags, comment, title) {
@@ -110,6 +126,9 @@ export default function FilterPrompts(props) {
                                             decks={decks}
                                             sendCurrentUser={sendCurrentUser}
                                         ></ExportPrompts>
+                                        <Button variant="text">
+                                            <FontAwesomeIcon icon={['far', 'heart']} />
+                                        </Button>
                                     </span>
                                     :
                                     ""
@@ -122,20 +141,6 @@ export default function FilterPrompts(props) {
                                 <Col md="5" className="mb-3">
                                     <h2 className="text-center mb-4">Draw Spark</h2>
                                     <Form onSubmit={handleSubmit}>
-                                        {/* <Form.Control as="select" onChange={handleDropdown}>
-                            <option value="" selected>Select existing tag</option>
-                                {
-                                    allTags.map((tag, index) => {
-                                        return (
-                                            <option key={index}>
-                                                {tag}
-                                            </option>
-                                        )
-                                    })
-                                }
-                            </Form.Control>
-                            <Form.Control type="text" ref={tagsRef} /> */}
-
                                         <Accordion className="mb-3">
                                             <Card>
                                                 <Accordion.Toggle style={{ height: "50px" }} as={Card.Header} eventKey="0">
@@ -184,7 +189,14 @@ export default function FilterPrompts(props) {
                                         prompt !== null ?
                                             <Fade in={true} appear={true} timeout={500}>
                                                 <div className="">
-                                                    <h3>{prompt.title}</h3>
+                                                    <h3>{prompt.title}
+                                                        {
+                                                            done ? 
+                                                            <span className="subline ml-2">
+                                                            (done)
+                                                            </span> : ""
+                                                        }
+                                                    </h3>
                                                     <p>{prompt.body}</p>
                                                     <p className="subline">{prompt.comment}</p>
                                                     <hr />
@@ -193,33 +205,49 @@ export default function FilterPrompts(props) {
                                                             <span key={tag.id} className="tag">{tag.text}</span>
                                                         )
                                                     })}
-                                                    { !disabled ? 
-                                                    <>
-                                                    { prompt.tags.length > 0 ? <hr /> : ""}
-                                                    <Row>
-                                                        <Col lg="4">
-                                                            <EditPrompt
-                                                                promptId={prompt.id}
-                                                                body={prompt.body}
-                                                                promptTags={prompt.tags}
-                                                                title={prompt.title}
-                                                                comment={prompt.comment}
-                                                                editPrompt={handleEdit}
-                                                                allTags={allTags}
-                                                                disabled={disabled}
-                                                            />
-                                                        </Col>
-                                                        <Col lg="4">
-                                                            <ConfirmDelete
-                                                                handleDelete={() => handleDelete(prompt.id)}
-                                                                title={"Delete spark?"}
-                                                                body={"This can't be undone"}
-                                                                disabled={disabled}
-                                                            />
-                                                        </Col>
-                                                    </Row> 
-                                                    </>
-                                                    : ""}
+                                                    {!disabled ?
+                                                        <>
+                                                            {prompt.tags.length > 0 ? <hr /> : ""}
+                                                            <Row>
+                                                                <Col lg="4">
+                                                                    <EditPrompt
+                                                                        promptId={prompt.id}
+                                                                        body={prompt.body}
+                                                                        promptTags={prompt.tags}
+                                                                        title={prompt.title}
+                                                                        comment={prompt.comment}
+                                                                        editPrompt={handleEdit}
+                                                                        allTags={allTags}
+                                                                        disabled={disabled}
+                                                                    />
+                                                                </Col>
+                                                                <Col lg="4">
+                                                                    <ConfirmDelete
+                                                                        handleDelete={() => handleDelete(prompt.id)}
+                                                                        title={"Delete spark?"}
+                                                                        body={"This can't be undone"}
+                                                                        disabled={disabled}
+                                                                    />
+                                                                </Col>
+                                                                <Col lg="4">
+                                                                    <Button variant="text" className="btn-tertiary icon-button" onClick={() => handleDone(!done)}>
+                                                                        {done ? "Mark Undone" : "Mark Done"}
+                                                                    </Button>
+                                                                </Col>
+                                                            </Row>
+                                                        </>
+                                                        : 
+                                                        <>
+                                                        {prompt.tags.length > 0 ? <hr /> : ""}
+                                                        <Row>
+                                                            <Col lg="4">
+                                                                <Button variant="text" disabled={!deck.markDone} className="btn-tertiary icon-button" onClick={() => handleDone(!done)}>
+                                                                        {done ? "Mark Undone" : "Mark Done"}
+                                                                </Button>
+                                                            </Col>
+                                                        </Row>
+                                                        </>
+                                                        }
                                                 </div>
                                             </Fade>
                                             :
