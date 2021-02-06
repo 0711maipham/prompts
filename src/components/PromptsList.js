@@ -113,7 +113,7 @@ export default function PromptList(props) {
                                                         body={"This can't be undone"}
                                                         disabled={disabled}
                                                     />
-                                                    <Button variant="text" className="btn-tertiary icon-button" onClick={() => handleDone(prompt.id, !prompt.done)}>
+                                                    <Button variant="text" disabled={currentUser ? (currentUser.uid == deck.createdBy ? false : !deck.markDone) : !deck.markDone} className="btn-tertiary icon-button" onClick={() => handleDone(prompt.id, !prompt.done)}>
                                                         {prompt.done ? "Mark Undone" : "Mark Done"}
                                                     </Button>
                                                 </Col>
