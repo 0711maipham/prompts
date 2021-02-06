@@ -15,7 +15,7 @@ export default function PromptList(props) {
     const [expandAccordion, setExpandAccordion] = useState(false)
     const handleAccordion = () => { setExpandAccordion(!expandAccordion) }
     const [disabled, setDisabled] = useState(true)
-    const { prompts, deck, deletePrompt, editPrompt, allTags, formatTags } = props
+    const { prompts, deck, deletePrompt, editPrompt, allTags, formatTags, markDone } = props
 
     useEffect(() => {
         console.log("use effect in prompts list called");
@@ -46,6 +46,11 @@ export default function PromptList(props) {
         editPrompt(id, body, tags, comment, title)
     }
 
+    function handleDone(id, marked) {
+        console.log(prompt.done, marked)
+        markDone(id, marked);
+    }
+
     function handleExpand() {
         console.log("expanded")
         setExpandPrompt(!expandPrompt);
@@ -71,7 +76,7 @@ export default function PromptList(props) {
                                 {
                                     prompts.map((prompt) => {
                                         return (
-                                            <Row key={prompt.id} className="bottom-divider">
+                                            <Row key={prompt.id} className={prompt.done ? "prompt-done bottom-divider pb-2" : "bottom-divider pb-2"}>
                                                 <Col xs="9">
                                                     <h4>{prompt.title}</h4>
                                                     <p>{expandPrompt ? prompt.body.substring(0, 85) : prompt.body.substring(0, 85) + "..."}
@@ -108,6 +113,9 @@ export default function PromptList(props) {
                                                         body={"This can't be undone"}
                                                         disabled={disabled}
                                                     />
+                                                    <Button variant="text" disabled={currentUser ? (currentUser.uid == deck.createdBy ? false : !deck.markDone) : !deck.markDone} className="btn-tertiary icon-button" onClick={() => handleDone(prompt.id, !prompt.done)}>
+                                                        {prompt.done ? "Mark Undone" : "Mark Done"}
+                                                    </Button>
                                                 </Col>
                                                 <hr />
                                             </Row>
