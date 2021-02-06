@@ -34,7 +34,6 @@ class EditDeck extends React.Component {
                             <Col md="12">
                                 <FilterPrompts
                                     allTags={this.state.allTags}
-                                    formatTags={this.formatTags}
                                     andOr={this.setAndOr}
                                     filterPrompts={this.filterPrompts}
                                     deck={this.state.deck}
@@ -42,6 +41,8 @@ class EditDeck extends React.Component {
                                     setCurrentUserDecks={this.setCurrentUserDecks}
                                     copyDeck={this.copyDeck}
                                     promptCount={this.state.prompts.length}
+                                    deletePrompt={this.deletePrompt}
+                                    editPrompt={this.editPrompt}
                                 ></FilterPrompts>
                             </Col>
                         </Row>
